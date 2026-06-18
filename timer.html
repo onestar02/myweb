@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Time 나만의 뽀모도로 타이머</title>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      background-image: url("ready.png");
+      background-size: contain;
+      background-repeat: no-repeat;
+      position: relative;
+      overflow: hidden;
+
+    }
+
+    .home {
+      position: absolute;
+      top: 20px;
+      left: 10px;
+      width: 80px;
+      height: 80px;
+      background-image: url("home.png");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+
+    .out {
+      position: absolute;
+      top: 20px;
+      right: 10px;
+      width: 80px;
+      height: 80px;
+      background-image: url("out.png");
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      cursor: pointer;
+    }
+
+    .time-box {
+      position: absolute;
+      top: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+
+      width: 255px;
+      height: 105px;
+      background-color: #f6e8d9;
+      border: 2px solid #4C4036;
+      border-radius: 15px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 48px;
+      font-weight: bold;
+      color: #2D241F;
+      letter-spacing: 3px;
+    }
+
+
+    .stage-line {
+      position: absolute;
+      top: 550px;
+      left: 50%;
+      transform: translateX(-50%);
+
+      width: 310px;
+      height: 4px;
+      background-color: #F0DDC6;
+    }
+
+    .dot {
+      position: absolute;
+      top: -7px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: #4C4036;
+    }
+
+    .dot.active {
+      background-color: #FF9B56;
+    }
+
+    .dot1 { left: 0px; }
+    .dot2 { left: 100px; }
+    .dot3 { left: 200px; }
+    .dot4 { left: 300px; }
+
+    .stage-text {
+      position: absolute;
+      top: 18px;
+      font-size: 8px;
+      color: #4C4036;
+      white-space: nowrap;
+    }
+
+    .text1 { left: -15px; }
+    .text2 { left: 95px; }
+    .text3 { left: 190px; }
+    .text4 { left: 293px; }
+
+    .pause-btn {
+    position: absolute;
+    top: 590px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 150px;
+    height: 75px;
+
+    background-image: url("restart.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    cursor: pointer;
+    }
+
+
+
+    @font-face {
+    font-family: 'RoundedFixedsys';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/DungGeunMo.woff') format('woff');
+    font-weight: normal;
+    font-display: swap;
+    }
+
+    * {
+        font-family: 'RoundedFixedsys'
+    }
+  </style>
+</head>
+
+<body>
+  <div class="timer-page">
+
+    <div class="home" onclick="goHome()"></div>
+    <div class="out" onclick="foodPage()"></div>
+
+    <div class="time-box" id="timeBox">25:00</div>
+
+    <div class="circle"></div>
+
+    <div class="stage-line">
+      <div class="dot dot1 active" id="dot1"></div>
+      <div class="dot dot2" id="dot2"></div>
+      <div class="dot dot3" id="dot3"></div>
+      <div class="dot dot4" id="dot4"></div>
+
+      <div class="stage-text text1">재료 손질 중</div>
+      <div class="stage-text text2">요리 중</div>
+      <div class="stage-text text3">설거지 중</div>
+      <div class="stage-text text4">먹는 중</div>
+    </div>
+
+    <div class="pause-btn" id="pauseBtn" onclick="toggleTimer()"></div>
+
+  </div>
+
+  <script>
+    function foodPage() {
+        if (timer !== null) {
+            clearInterval(timer);
+            timer = null;
+        }
+
+        if (window.opener && !window.opener.closed) {
+            window.opener.location.href = "food.html";
+            window.close();
+        } else {
+            location.href = "food.html";
+        }
+        }
+
+    const phases = [
+    {
+      name: "재료 손질중",
+      seconds: 1 * 60,
+      background: "ready.png"
+    },
+    {
+      name: "요리 중",
+      seconds: 1 * 60,
+      background: "cooking.png"
+      
+    },
+    {
+      name: "설거지 중",
+      seconds: 1 * 60,
+      background: "cleaning.png"
+    },
+    {
+      name: "먹는 중",
+      seconds: 0,
+      background: "eating.png"
+    }
+  ];
+
+  let currentPhase = 0;
+  let remainingSeconds = phases[currentPhase].seconds;
+
+  let timer = null;
+  let isRunning = false;
+
+  const timeBox = document.getElementById("timeBox");
+  const pauseBtn = document.getElementById("pauseBtn");
+
+  function updateTime() {
+    const minutes = Math.floor(remainingSeconds / 60);
+    const seconds = remainingSeconds % 60;
+
+    timeBox.textContent =
+      String(minutes).padStart(2, "0") + ":" +
+      String(seconds).padStart(2, "0");
+  }
+
+  function updateStageDots() {
+    document.getElementById("dot1").classList.remove("active");
+    document.getElementById("dot2").classList.remove("active");
+    document.getElementById("dot3").classList.remove("active");
+    document.getElementById("dot4").classList.remove("active");
+
+    if (currentPhase === 0) {
+      document.getElementById("dot1").classList.add("active");
+    } else if (currentPhase === 1) {
+      document.getElementById("dot2").classList.add("active");
+    } else if (currentPhase === 2) {
+      document.getElementById("dot3").classList.add("active");
+    } else if (currentPhase === 3) {
+      document.getElementById("dot4").classList.add("active");
+    }
+  }
+
+  function loadPhase() {
+    const phase = phases[currentPhase];
+
+    document.body.style.backgroundImage = `url("${phase.background}")`;
+    remainingSeconds = phase.seconds;
+
+    updateStageDots();
+
+    if (phase.seconds > 0) {
+      updateTime();
+    } else {
+      finishTimer();
+    }
+  }
+
+  function startTimer() {
+    if (timer !== null) {
+      return;
+    }
+
+    timer = setInterval(function() {
+      if (remainingSeconds > 0) {
+        remainingSeconds--;
+        updateTime();
+      } else {
+        nextPhase();
+      }
+    }, 1000);
+  }
+
+  function nextPhase() {
+    clearInterval(timer);
+    timer = null;
+
+    currentPhase++;
+
+    if (currentPhase >= phases.length) {
+      finishTimer();
+      return;
+    }
+
+    loadPhase();
+
+    if (currentPhase === 1) {
+    alert("수고했어요! 이제 쉬어볼까요?");
+    }
+
+    if (currentPhase === 2) {
+    alert("다시 집중해봐요!");
+  }
+
+
+    if (phases[currentPhase].seconds > 0 && isRunning) {
+      startTimer();
+    }
+  }
+
+  function finishTimer() {
+  clearInterval(timer);
+  timer = null;
+  isRunning = false;
+
+  increaseTimerCount();
+
+  document.body.style.backgroundImage = `url("${phases[3].background}")`;
+
+  timeBox.textContent = "Finish";
+
+  pauseBtn.textContent = "";
+  pauseBtn.style.backgroundImage = 'url("study_time.png")';
+  pauseBtn.style.backgroundSize = "100% 100%";
+  pauseBtn.style.backgroundPosition = "center";
+  pauseBtn.style.backgroundRepeat = "no-repeat";
+  pauseBtn.style.pointerEvents = "none";
+
+  updateStageDots();
+
+  alert("요리가 완성됐어요!");
+}
+
+  function toggleTimer() {
+  if (currentPhase === 3) {
+    return;
+  }
+
+  if (isRunning) {
+    clearInterval(timer);
+    timer = null;
+
+    pauseBtn.style.backgroundImage = 'url("restart.png")';
+
+    isRunning = false;
+  } else {
+    startTimer();
+
+    pauseBtn.style.backgroundImage = 'url("stop.png")';
+
+    isRunning = true;
+  }
+}
+
+  function goHome() {
+    location.href = "main.html";
+  }
+
+  function closeTimer() {
+    window.close();
+  }
+
+  loadPhase();
+
+    let hasCounted = false;
+
+function increaseTimerCount() {
+    if (hasCounted) {
+        return;
+    }
+
+    hasCounted = true;
+
+    const parentWindow =
+        window.opener && !window.opener.closed
+            ? window.opener
+            : window;
+
+    let count = Number(parentWindow.sessionStorage.getItem("timerCount") || 0);
+    count++;
+
+    parentWindow.sessionStorage.setItem("timerCount", count);
+
+    const countBox = parentWindow.document.getElementById("timerCount");
+
+    if (countBox) {
+        countBox.textContent = count;
+    }
+
+    if (typeof parentWindow.showTimerCount === "function") {
+        parentWindow.showTimerCount();
+    }
+
+    console.log("타이머 완료 횟수:", count);
+}
+
+    
+  </script>
+</body>
+</html>
