@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Time 나만의 뽀모도로 타이머</title>
+
+    <style>
+        body{
+        margin: 0;
+        overflow: hidden;
+        }
+
+        .main {
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url("background.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        }
+
+        .home{
+        margin-top: 10px;
+        margin-left: 20px;
+        width: 100px;
+        height: 100px;
+        background-image: url("home.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .out{
+        margin-top: 10px;
+        margin-left: 1410px;
+        width: 100px;
+        height: 100px;
+        background-image: url("out.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .about{
+        margin-top: 40px;
+        margin-left: 200px;
+        width: 200px;
+        height: 140px;
+        background-image: url("about.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .bar{
+        margin-top: 100px;
+        margin-left: 400px;
+        width: 950px;
+        height: 80px;
+        background-color:#C8AE9A;
+        background-size: cover;
+        background-repeat: no-repeat;
+        opacity: 0.8;
+        position:absolute;
+        border-radius: 30px;
+        z-index: 1;        
+        }
+
+        .box{
+        margin-top: 200px;
+        margin-left: 220px;
+        width: 1100px;
+        height: 600px;
+        background-image: url(box.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        border-radius: 30px;     
+        }
+
+        .about2{
+        margin-top: 90px;
+        margin-left: 450px;
+        width: 100px;
+        height: 70px;
+        background-image: url("about.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        z-index: 2;
+        }
+
+        .gudie{
+        margin-top: 90px;
+        margin-left: 650px;
+        width: 100px;
+        height: 70px;
+        background-image: url("gudie.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        z-index: 2;
+        }
+
+        .footer {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        color: #3E322B;
+        letter-spacing: 1px;
+        }
+
+       
+
+    </style>
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="home" onclick="final_project()"></div>
+        <div class="out" onclick="mainPage()"></div>
+        <div class="about"></div>
+        <div class="box"></div>
+        <div class="bar"></div>
+        <div class="about2" onclick="aboutPage()"></div>
+        <div class="gudie" onclick="gudiePage()"></div> 
+        <div class="footer">
+        오늘 완료한 집중 횟수 | <span id="todayFocusCount">0</span>회
+        &nbsp;&nbsp;&nbsp;
+        © Study Time
+        </div>   
+    </div>
+        
+    <script>
+        function final_project(){
+            location.href = "final_project.html";
+        }
+        function mainPage(){
+            location.href = "main.html";
+        }
+        function aboutPage(){
+            location.href = "about.html";
+        }
+        function gudiePage(){
+            location.href = "gudie.html";
+        }
+
+        function showTimerCount() {
+            const count = sessionStorage.getItem("timerCount") || 0;
+            const timerCount = document.getElementById("timerCount");
+
+            if (timerCount) {
+                timerCount.textContent = count;
+            }
+        }
+
+        window.showTimerCount = showTimerCount;
+
+        window.addEventListener("pageshow", showTimerCount);
+        window.addEventListener("focus", showTimerCount);
+
+        showTimerCount();
+    </script>
+</body>
+</html>
