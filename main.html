@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Time 나만의 뽀모도로 타이머</title>
+
+    <style>
+        body{
+        overflow: hidden;
+        }
+
+        .main {
+        margin: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url("main_background.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        position: relative;
+        }
+
+        .home{
+        margin-top: 10px;
+        margin-left: 20px;
+        width: 100px;
+        height: 100px;
+        background-image: url("home.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .about{
+        margin-top: 40px;
+        margin-left: 530px;
+        width: 130px;
+        height: 100px;
+        background-image: url("about.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .food{
+        margin-top: 40px;
+        margin-left: 680px;
+        width: 130px;
+        height: 100px;
+        background-image: url("food.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .recipe{
+        margin-top: 40px;
+        margin-left: 830px;
+        width: 130px;
+        height: 100px;
+        background-image: url("recipe.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .storage{
+        margin-top: 40px;
+        margin-left: 980px;
+        width: 130px;
+        height: 100px;
+        background-image: url("storage.png");
+        background-size: cover;
+        background-repeat: no-repeat;
+        position:absolute;
+        }
+
+        .footer {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        width: 100%;
+        text-align: center;
+        font-size: 13px;
+        color: #3E322B;
+        letter-spacing: 1px;
+        }
+      
+
+    </style>
+
+</head>
+
+<body>
+    <div class="main">
+        <div class="home" onclick="final_project()"></div>
+        <div class="about" onclick="aboutPage()"></div>
+        <div class="food" onclick="foodPage()"></div>
+        <div class="recipe" onclick="recipePage()"></div>
+        <div class="storage" onclick="storagePage()"></div>
+        <div class="footer">
+        오늘 완료한 집중 횟수 | <span id="todayFocusCount">0</span>회
+        &nbsp;&nbsp;&nbsp;
+        © Study Time
+        </div>
+    </div>
+        
+    <script>
+        function final_project(){
+            location.href = "final_project.html";
+        }
+        function aboutPage(){
+            location.href = "about.html";
+        }
+
+        function foodPage(){
+            location.href = "food.html";
+        }
+        function recipePage(){
+            location.href = "recipe.html";
+        }
+        function storagePage(){
+            location.href = "storage.html";
+        }
+
+       function showTimerCount() {
+            const count = sessionStorage.getItem("timerCount") || 0;
+            const timerCount = document.getElementById("timerCount");
+
+            if (timerCount) {
+                timerCount.textContent = count;
+            }
+        }
+
+        window.showTimerCount = showTimerCount;
+
+        window.addEventListener("pageshow", showTimerCount);
+        window.addEventListener("focus", showTimerCount);
+
+        showTimerCount();
+    </script>
+</body>
+</html>
